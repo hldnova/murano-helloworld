@@ -18,10 +18,12 @@ fi
 
 export OS_PROTOCOL=${OS_PROTOCOL:-https}
 export OS_RABBIT_PORT=${OS_RABBIT_PORT:-5672}
-export OS_KEYSTONE_PORT=${OS_KEYSTONE_PORT:-5000}
+export OS_KEYSTONE_PUBLIC_PORT=${OS_KEYSTONE_PUBLIC_PORT:-5000}
+export OS_KEYSTONE_ADMIN_PORT=${OS_KEYSTONE_ADMIN_PORT:-35357}
 export OS_MURANO_API_PORT=${OS_MURANO_API_PORT:-8082}
 export OS_HORIZON_PORT=${OS_HORIZON_PORT:-8000}
-export OS_AUTH_URL=${OS_PROTOCOL}://${OS_KEYSTONE_HOST}:${OS_KEYSTONE_PORT}/v2.0
+export OS_AUTH_URL=${OS_PROTOCOL}://${OS_KEYSTONE_HOST}:${OS_KEYSTONE_PUBLIC_PORT}/v2.0
+export OS_IDENTITY_URL=${OS_PROTOCOL}://${OS_KEYSTONE_HOST}:${OS_KEYSTONE_ADMIN_PORT}
 export OS_REGION=${OS_REGION:-regionOne}
 export MURANO_API_URL=http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
 
@@ -49,14 +51,14 @@ export MURANO_API_URL=http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
   echo ""
   echo "[keystone_authtoken]"
   echo "auth_uri = ${OS_AUTH_URL}"
-  echo "identity_uri=${OS_PROTOCOL}://${OS_KEYSTONE_HOST}:35357"
+  echo "identity_uri = ${OS_IDENTITY_URL}"
   echo "admin_user = ${OS_USERNAME_TEMP}"
   echo "admin_password = ${OS_PASSWORD_TEMP}"
   echo "admin_tenant_name = ${OS_PROJECT_NAME_TEMP}"
   echo "insecure = true"
   echo ""
   echo "[murano]"
-  echo "url = http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}"
+  echo "url = ${MURANO_API_URL}"
   echo "insecure = true"
   echo ""
   echo "[rabbitmq]"
@@ -84,7 +86,20 @@ export MURANO_API_URL=http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
 # update horizon local_settings.py
 sed -i -e 's|OPENSTACK_HOST =.*|OPENSTACK_HOST = "'$OS_KEYSTONE_HOST'"|' /root/murano/horizon/openstack_dashboard/local/local_settings.py
 sed -i -e 's|OPENSTACK_KEYSTONE_URL =.*|OPENSTACK_KEYSTONE_URL = "'$OS_AUTH_URL'"|' /root/murano/horizon/openstack_dashboard/local/local_settings.py
-sed -i -e 's|MURANO_API_URL =.*|MURANO_API_URL = "'$MURANO_API_URL'"|' /root/murano/horizon/openstack_dashboard/local/local_settings.py
+sed -i -e  "s|#ALLOWED_HOSTS = .*|ALLOWED_HOSTS = ['*']|" /root/murano/horizon/openstack_dashboard/local/local_settings.py
+echo "MURANO_API_URL = '$MURANO_API_URL'" >> /root/murano/horizon/openstack_dashboard/local/local_settings.py
+
+{
+  echo ""
+  echo "DATABASES = {"
+  echo "  'default': {"
+  echo "  'ENGINE': 'django.db.backends.sqlite3',"
+  echo "  'NAME': 'murano-dashboard.sqlite',"
+  echo "  }"
+  echo "}"
+
+  echo "SESSION_ENGINE = 'django.contrib.sessions.backends.db'"
+} >> /root/murano/horizon/openstack_dashboard/local/local_settings.py
 
 export OS_ARGS="--insecure \
         --os-auth-url ${OS_AUTH_URL} \
