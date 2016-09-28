@@ -35,7 +35,7 @@ if [ ! -e ~/murano/murano_first_boot ]
 then
 
     svc_type="murano-application-catalog"
-    svc_name="murano-"${CONTAINER_IP}
+    svc_name="murano-"${MURANO_CONTAINER_IP}
 
     cd ~/murano/murano
 
@@ -56,7 +56,7 @@ then
     # create murano endpoint. delete the old one and create a new one.
     # be careful not to create too many. The token could get too big that could eventually
     # "paralyze" keystone. 
-    EP_IDS=`openstack $OS_ARGS --os-identity-api-version 3 endpoint list | grep $CONTAINER_IP | grep $svc_type | awk '{print $2}'`
+    EP_IDS=`openstack $OS_ARGS --os-identity-api-version 3 endpoint list | grep $MURANO_CONTAINER_IP | grep $svc_type | awk '{print $2}'`
 
     for x in `echo $EP_IDS`
     do
@@ -71,13 +71,13 @@ then
     # Create murano endpoints
     set -x
     openstack $OS_ARGS --os-identity-api-version 3 \
-        endpoint create --region $OS_REGION $SERVICE_ID internal http://${CONTAINER_IP}:${OS_MURANO_PORT}
+        endpoint create --region $OS_REGION $SERVICE_ID internal http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
 
     openstack $OS_ARGS --os-identity-api-version 3 \
-        endpoint create --region $OS_REGION $SERVICE_ID admin http://${CONTAINER_IP}:${OS_MURANO_PORT}
+        endpoint create --region $OS_REGION $SERVICE_ID admin http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
 
     # import core library
-    murano $OS_ARGS --murano-url http://${CONTAINER_IP}:${OS_MURANO_PORT} \
+    murano $OS_ARGS --murano-url http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \
         package-import --is-public --exists-action u io.murano.zip
     set +x
     touch ~/murano/murano_first_boot
@@ -99,4 +99,4 @@ python manage.py migrate
 python manage.py runserver 0.0.0.0:${OS_HORIZON_PORT} > /logs/murano-dashboard.log 2>&1 &
 set +x
 sleep 5
-echo "Murano started. Connect to http://${CONTAINER_IP}:${OS_HORIZON_PORT}"
+echo "Murano started. Connect to http://${MURANO_CONTAINER_IP}:${OS_HORIZON_PORT}"
