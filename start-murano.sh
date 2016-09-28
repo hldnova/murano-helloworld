@@ -3,15 +3,13 @@
 #
 set -u
 
-#KEYSTONE_HOST=10.246.151.96
+# keystone host of your OpenStack
 KEYSTONE_HOST=10.247.134.60
+# rabbitmq credentials of your OpenStack
 OS_RABBIT_USERID=guest
-#OS_RABBIT_USERID=openstack
 OS_RABBIT_PASSWORD=guest
-#OS_RABBIT_PASSWORD=tpjjxkfulLUgVBfIthaj
+# IP address of the host on which murano container will run on
 MURANO_CONTAINER_IP=10.247.134.56
-CONTAINER_NAME=murano
-IMAGE_TAG=murano-helloworld
 
 OS_PROTOCOL=http
 OS_USERNAME=admin 
@@ -22,7 +20,11 @@ OS_DOMAIN_NAME=default
 LOCAL_MURANO_PORT=8082
 LOCAL_HORIZON_PORT=8000
 LOCAL_RABBIT_PORT=5672
+OS_KEYSTONE_PUBLIC_PORT=5000
+OS_KEYSTONE_ADMIN_PORT=35357
 
+CONTAINER_NAME=murano
+IMAGE_TAG=murano-helloworld
 LOG_DIR=/tmp/murano/logs
 
 docker rm -f $CONTAINER_NAME
@@ -32,6 +34,8 @@ docker run -d -v $LOG_DIR:/logs \
     -h `hostname` \
     -e OS_PROTOCOL=$OS_PROTOCOL \
     -e OS_KEYSTONE_HOST=$KEYSTONE_HOST \
+    -e OS_KEYSTONE_PUBLIC_PORT=$OS_KEYSTONE_PUBLIC_PORT \
+    -e OS_KEYSTONE_ADMIN_PORT=$OS_KEYSTONE_ADMIN_PORT \
     -e OS_USERNAME_TEMP=$OS_USERNAME \
     -e OS_PASSWORD_TEMP=$OS_PASSWORD \
     -e OS_PROJECT_NAME_TEMP=$OS_PROJECT_NAME \
@@ -45,5 +49,5 @@ docker run -d -v $LOG_DIR:/logs \
 docker ps | grep $CONTAINER_NAME
 echo 
 echo "To monitor the progress: tail -f $LOG_DIR/murano-init.log"
-echo "More logs at $LOG_DIR if there are any issues"
+echo "More logs at $LOG_DIR" 
 echo "Connect to http://${MURANO_CONTAINER_IP}:${LOCAL_HORIZON_PORT}"
