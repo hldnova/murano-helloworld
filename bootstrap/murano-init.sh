@@ -40,41 +40,42 @@ then
     cd ~/murano/murano
 
     # Get murano catalog service id
-    SERVICE_IDS=`openstack $OS_ARGS --os-identity-api-version 3 service list | grep $svc_name | grep $svc_type | awk '{print $2}'`
+    SERVICE_IDS=`openstack $OS_ARGS  service list | grep $svc_name | grep $svc_type | awk '{print $2}'`
 
     for x in `echo $SERVICE_IDS`
     do
         set -x 
-        openstack $OS_ARGS  --os-identity-api-version 3 service delete $x
+        openstack $OS_ARGS service delete $x
         set +x
     done
 
     set -x
-    openstack $OS_ARGS --os-identity-api-version 3 service create --name $svc_name $svc_type
+    openstack $OS_ARGS service create --name $svc_name $svc_type
     set +x
 
     # create murano endpoint. delete the old one and create a new one.
     # be careful not to create too many. The token could get too big that could eventually
     # "paralyze" keystone. 
-    EP_IDS=`openstack $OS_ARGS --os-identity-api-version 3 endpoint list | grep $MURANO_CONTAINER_IP | grep $svc_type | awk '{print $2}'`
+    EP_IDS=`openstack $OS_ARGS endpoint list | grep $MURANO_CONTAINER_IP | grep $svc_type | awk '{print $2}'`
 
     for x in `echo $EP_IDS`
     do
         set -x
-        openstack $OS_ARGS  --os-identity-api-version 3 endpoint delete $x
+        openstack $OS_ARGS endpoint delete $x
         set +x
     done
 
     # Get murano service catalog id
-    SERVICE_ID=`openstack $OS_ARGS --os-identity-api-version 3 service list | grep $svc_name | grep $svc_type | awk '{print $2}'`
+    SERVICE_ID=`openstack $OS_ARGS service list | grep $svc_name | grep $svc_type | awk '{print $2}'`
 
     # Create murano endpoints
     set -x
-    openstack $OS_ARGS --os-identity-api-version 3 \
-        endpoint create --region $OS_REGION $SERVICE_ID internal http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
-
-    openstack $OS_ARGS --os-identity-api-version 3 \
-        endpoint create --region $OS_REGION $SERVICE_ID admin http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
+    openstack $OS_ARGS endpoint create \
+       --region $OS_REGION \
+       --adminurl http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \
+       --publicurl http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \
+       --internalurl http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \
+       $SERVICE_ID
 
     # import core library
     murano $OS_ARGS --murano-url http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \

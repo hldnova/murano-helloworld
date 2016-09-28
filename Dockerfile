@@ -51,18 +51,21 @@ RUN mkdir ~/murano && \
     zip -r ../../io.murano.zip * && \
     mkdir -p /etc/murano && \
     cp ~/murano/murano/etc/murano/* /etc/murano && \
-    rm -rf ~/murano/murano/.git 
+    rm -rf ~/murano/murano/.git
 
 RUN cd ~/murano && \
     git clone -b stable/liberty https://github.com/openstack/murano-dashboard && \
+    cd murano-dashboard && \
+    pip install -r requirements.txt && \
+    python setup.py install && \
+    cd ~/murano && \
     git clone -b stable/liberty https://github.com/openstack/horizon  && \
     cd horizon && \
     pip install -r requirements.txt && \
-    pip install -e ../murano-dashboard && \
     cp ../murano-dashboard/muranodashboard/local/_50_murano.py openstack_dashboard/local/enabled/ && \
+    cp openstack_dashboard/local/local_settings.py.example openstack_dashboard/local/local_settings.py && \
     rm -rf ~/murano/horizon/.git && \
-    rm -rf ~/murano/murano-dashboard/.git && \
-    rm -rf ~/murano/app-catalog-ui/.git
+    rm -rf ~/murano/murano-dashboard/.git 
 
 ENV TERM=xterm
 

@@ -60,13 +60,12 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #    "compute": 2
 #}
 OPENSTACK_API_VERSIONS = {
-    "identity": 3,
+    "identity": 2.0,
 }
 
 # Set this to True if running on multi-domain model. When this is enabled, it
 # will require user to enter the Domain name in addition to username for login.
 #OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = False
-OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
 
 # Overrides the default domain used when running on single-domain model
 # with Keystone V3. All entities will be created in the default domain.
