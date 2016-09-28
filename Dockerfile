@@ -31,6 +31,14 @@ RUN mkdir -p /var/log/mysql && \
 
 ADD bootstrap/requirements.txt /root/
 
+RUN pip install python-novaclient==3.3.1 && \
+    pip install python-swiftclient==3.0.0 && \
+    pip install python-heatclient==1.1.0 && \
+    pip install python-cinderclient==1.6.0 && \
+    pip install python-keystoneclient==2.3.1 && \
+    pip install python-neutronclient==3.1.0 && \
+    pip install python-openstackclient==2.4.0
+
 # install murano
 RUN mkdir ~/murano && \
     cd ~/murano && \
