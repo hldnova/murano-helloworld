@@ -31,13 +31,13 @@ RUN mkdir -p /var/log/mysql && \
 
 ADD bootstrap/requirements.txt /root/
 
-RUN pip install python-novaclient==3.3.1 && \
-    pip install python-swiftclient==3.0.0 && \
-    pip install python-heatclient==1.1.0 && \
-    pip install python-cinderclient==1.6.0 && \
-    pip install python-keystoneclient==2.3.1 && \
-    pip install python-neutronclient==3.1.0 && \
-    pip install python-openstackclient==2.4.0
+#RUN pip install python-novaclient==3.3.1 && \
+#    pip install python-swiftclient==3.0.0 && \
+#    pip install python-heatclient==1.1.0 && \
+#    pip install python-cinderclient==1.6.0 && \
+#    pip install python-keystoneclient==2.3.1 && \
+#    pip install python-neutronclient==3.1.0 && \
+#    pip install python-openstackclient==2.4.0
 
 # install murano
 RUN mkdir ~/murano && \
@@ -55,13 +55,10 @@ RUN mkdir ~/murano && \
 
 RUN cd ~/murano && \
     git clone -b stable/liberty https://github.com/openstack/murano-dashboard && \
-    cd murano-dashboard && \
-    pip install -r requirements.txt && \
-    python setup.py install && \
-    cd ~/murano && \
     git clone -b stable/liberty https://github.com/openstack/horizon  && \
     cd horizon && \
     pip install -r requirements.txt && \
+    pip install -e ../murano-dashboard && \
     cp ../murano-dashboard/muranodashboard/local/_50_murano.py openstack_dashboard/local/enabled/ && \
     cp openstack_dashboard/local/local_settings.py.example openstack_dashboard/local/local_settings.py && \
     rm -rf ~/murano/horizon/.git && \
