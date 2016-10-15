@@ -4,12 +4,12 @@
 set -u
 
 # keystone host of your OpenStack
-KEYSTONE_HOST=10.247.134.60
+KEYSTONE_HOST=192.168.100.60
 # rabbitmq credentials of your OpenStack
 OS_RABBIT_USERID=guest
 OS_RABBIT_PASSWORD=guest
 # IP address of the host on which murano container will run on
-MURANO_CONTAINER_IP=10.247.134.56
+MURANO_CONTAINER_IP=192.168.100.70
 
 OS_PROTOCOL=http
 OS_USERNAME=admin 
@@ -24,7 +24,7 @@ OS_KEYSTONE_PUBLIC_PORT=5000
 OS_KEYSTONE_ADMIN_PORT=35357
 
 CONTAINER_NAME=murano
-IMAGE_TAG=murano-helloworld
+IMAGE_TAG=lidaheemc/murano-helloworld
 LOG_DIR=/tmp/murano/logs
 
 docker rm -f $CONTAINER_NAME
