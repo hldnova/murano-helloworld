@@ -34,7 +34,7 @@ sleep 5
 if [ ! -e ~/murano/murano_first_boot ]
 then
 
-    svc_type="murano-application-catalog"
+    svc_type="application-catalog"
     svc_name="murano-"${MURANO_CONTAINER_IP}
 
     cd ~/murano/murano
@@ -99,5 +99,6 @@ set -x
 python manage.py migrate
 python manage.py runserver 0.0.0.0:${OS_HORIZON_PORT} > /logs/murano-dashboard.log 2>&1 &
 set +x
+ln -s /logs ~/murano/logs
 sleep 5
 echo "Murano started. Connect to http://${MURANO_CONTAINER_IP}:${OS_HORIZON_PORT}"
