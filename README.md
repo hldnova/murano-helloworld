@@ -8,29 +8,43 @@ This was based on the steps from http://docs.openstack.org/developer/murano/inst
 1. Install docker (e.g., on Ubuntu: https://docs.docker.com/engine/installation/linux/ubuntulinux/)
 2. In existing OpenStack, create a network/subnet connected to external network and configure DNS servers by editing the subnet so that the VMs can pull packages from internet during Murano deployment.
 
+## Start Murano Services
+```
+git clone https://github.com/hldnova/murano-helloworld
+```
+Edit start-murano.sh to set parameters to your OpenStack deployments. Find the rabbitmq credentials, e.g., from nova.conf. At a minimum, you will need to adjust the following parameters.
+```
+MURANO_CONTAINER_IP=192.168.100.70
+KEYSTONE_HOST=192.168.100.60
+OS_RABBIT_USERID=guest
+OS_RABBIT_PASSWORD=guest
+OS_USERNAME=admin
+OS_PASSWORD=password
+OS_PROJECT_NAME=admin
+```
+To access Murano dashboard, point your browser to http://<container_host_ip>:8000
 
-# Murano Helloworld
-## Introduction
-Hello world for OpenStack Murano. For those who just started to get Murano set up for prototype or testing, it is common to run into dependencies issue of various python packages managed via native package management system and pip. The goal of this exercise is to set up Murano quickly in a docker container so that developers can focus on exploring Murano features instead of spending valable time on setting up dev environment.
+The following services are running inside the container:
+* Murano API service
+* Murano Engine
+* Horizon with Murano dashboard
+* rabbitmq and mysql
 
-This was based on the steps from http://docs.openstack.org/developer/murano/install/manual.html and http://egonzalez.org/murano-in-rdo-openstack-manual-installation/
+Up on container start, Murano service and endpoints are created in keystone.
 
-## Prerequisites
-1. Install docker (e.g., on Ubuntu: https://docs.docker.com/engine/installation/linux/ubuntulinux/)
-2. In existing OpenStack, create a network/subnet connected to external network and configure DNS servers by editing the subnet so that the VMs can pull packages from internet during Murano deployment.
+## Deploy application catalog
+To deploy application catalog, follow the steps in http://docs.openstack.org/developer/murano/enduser-guide/quickstart.html
 
-# Murano Helloworld
-## Introduction
-Hello world for OpenStack Murano. For those who just started to get Murano set up for prototype or testing, it is common to run into dependencies issue of various python packages managed via native package management system and pip. The goal of this exercise is to set up Murano quickly in a docker container so that developers can focus on exploring Murano features instead of spending valable time on setting up dev environment.
+You can also attach to the docker container to run murano cli client. By default, the container name is "murano" as set in the script.
+```
+# docker exec -it murano bash
 
-This was based on the steps from http://docs.openstack.org/developer/murano/install/manual.html and http://egonzalez.org/murano-in-rdo-openstack-manual-installation/
+~/murano# export OS_USERNAME=admin
+~/murano# export OS_PASSWORD=password
+~/murano# export OS_AUTH_URL=http://192.168.100.60:5000/v2.0
+~/murano# export OS_TENANT_NAME=admin
 
-## Prerequisites
-1. Install docker (e.g., on Ubuntu: https://docs.docker.com/engine/installation/linux/ubuntulinux/)
-2. In existing OpenStack, create a network/subnet connected to external network and configure DNS servers by editing the subnet so that the VMs can pull packages from internet during Murano deployment.
-
-
-ample commands:
+Sample commands:
 ~/murano# murano package-list
 ~/murano# murano environment-list
 ```
