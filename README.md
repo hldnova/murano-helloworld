@@ -12,15 +12,17 @@ This was based on the steps from http://docs.openstack.org/developer/murano/inst
 ```
 git clone https://github.com/hldnova/murano-helloworld
 ```
-Edit start-murano.sh to set parameters to your OpenStack deployments. Find the rabbitmq credentials, e.g., from nova.conf. At a minimum, you will need to adjust the following parameters.
+Edit start-murano.sh to set parameters to your OpenStack deployments. At a minimum, you will need to adjust the following parameters.
 ```
 MURANO_CONTAINER_IP=192.168.100.70
 KEYSTONE_HOST=192.168.100.60
-OS_RABBIT_USERID=guest
-OS_RABBIT_PASSWORD=guest
 OS_USERNAME=admin
 OS_PASSWORD=password
 OS_PROJECT_NAME=admin
+```
+Optional, if you want Murano to use rabbitmq on your existing OpenStack and keep the one on the container for VMs, set the following parameters.
+```
+
 ```
 
 To start
@@ -28,7 +30,7 @@ To start
 # sudo ./start-murano.sh
 ```
 
-To access Murano dashboard, point your browser to http://<container_host_ip>:8000
+To access Murano dashboard, point your browser to http://192.168.100.70:8000
 
 The following services are running inside the container:
 * Murano API service
@@ -36,7 +38,7 @@ The following services are running inside the container:
 * Horizon with Murano dashboard
 * rabbitmq and mysql
 
-Up on container start, Murano service and endpoints are created in keystone.
+Upon container start, Murano service and endpoints are created in keystone.
 
 ## Deploy application catalog
 To deploy application catalog, follow the steps in http://docs.openstack.org/developer/murano/enduser-guide/quickstart.html
