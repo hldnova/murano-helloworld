@@ -72,13 +72,13 @@ then
     set -x
     openstack $OS_ARGS endpoint create \
        --region $OS_REGION \
-       --adminurl http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \
-       --publicurl http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \
-       --internalurl http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \
+       --adminurl http://${MURANO_CONTAINER_IP}:${MURANO_API_PORT} \
+       --publicurl http://${MURANO_CONTAINER_IP}:${MURANO_API_PORT} \
+       --internalurl http://${MURANO_CONTAINER_IP}:${MURANO_API_PORT} \
        $SERVICE_ID
 
     # import core library
-    murano $OS_ARGS --murano-url http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT} \
+    murano $OS_ARGS --murano-url http://${MURANO_CONTAINER_IP}:${MURANO_API_PORT} \
         package-import --is-public --exists-action u io.murano.zip
     set +x
     touch ~/murano/murano_first_boot
@@ -97,8 +97,8 @@ echo "Start horizon"
 cd ~/murano/horizon
 set -x
 python manage.py migrate
-python manage.py runserver 0.0.0.0:${OS_HORIZON_PORT} > /logs/murano-dashboard.log 2>&1 &
+python manage.py runserver 0.0.0.0:${MURANO_HORIZON_PORT} > /logs/murano-dashboard.log 2>&1 &
 set +x
 ln -s /logs ~/murano/logs
 sleep 5
-echo "Murano started. Connect to http://${MURANO_CONTAINER_IP}:${OS_HORIZON_PORT}"
+echo "Murano started. Connect to http://${MURANO_CONTAINER_IP}:${MURANO_HORIZON_PORT}"

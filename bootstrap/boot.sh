@@ -12,31 +12,35 @@ function sigTermTrapHandler()
 trap sigTermTrapHandler SIGTERM
 
 if [ ! -d /logs ]; then
-    echo "Error - /logs directory not present. Specify -v /log:<your_log_directory> on docker run"
+    echo "Error - /logs directory not present. Specify -v /logs:<your_log_directory>"
     exit 2
 fi
 
-export OS_PROTOCOL=${OS_PROTOCOL:-https}
-export OS_RABBIT_PORT=${OS_RABBIT_PORT:-5672}
+export OS_PROTOCOL=${OS_PROTOCOL:-http}
 export OS_KEYSTONE_PUBLIC_PORT=${OS_KEYSTONE_PUBLIC_PORT:-5000}
 export OS_KEYSTONE_ADMIN_PORT=${OS_KEYSTONE_ADMIN_PORT:-35357}
-export OS_MURANO_API_PORT=${OS_MURANO_API_PORT:-8082}
-export OS_HORIZON_PORT=${OS_HORIZON_PORT:-8000}
 export OS_AUTH_URL=${OS_PROTOCOL}://${OS_KEYSTONE_HOST}:${OS_KEYSTONE_PUBLIC_PORT}/v2.0
 export OS_IDENTITY_URL=${OS_PROTOCOL}://${OS_KEYSTONE_HOST}:${OS_KEYSTONE_ADMIN_PORT}
 export OS_REGION=${OS_REGION_TEMP:-RegionOne}
-export MURANO_API_URL=http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
+export MURANO_HORIZON_PORT=${MURANO_HORIZON_PORT:-8000}
+export MURANO_API_PORT=${MURANO_MURANO_API_PORT:-8082}
+export MURANO_API_URL=http://${MURANO_CONTAINER_IP}:${MURANO_API_PORT}
+export MURANO_RABBIT_PORT=${MURANO_RABBIT_PORT:-5672}
+export OS_RABBIT_HOST=${OS_RABBIT_HOST}
+export OS_RABBIT_PORT=${OS_RABBIT_PORT:-5672}
+export OS_RABBIT_USERNAME=${OS_RABBIT_USERNAME}
+export OS_RABBIT_PASSWORD=${OS_RABBIT_PASSWORD}
 
 {
   echo "[default]" 
   echo "verbose = true" 
   echo ""
   echo "[oslo_messaging_rabbit]"
-  echo "rabbit_host = ${OS_KEYSTONE_HOST}"
+  echo "rabbit_host = ${OS_RABBIT_HOST}"
   echo "rabbit_port = ${OS_RABBIT_PORT}"
-  echo "rabbit_hosts = ${OS_KEYSTONE_HOST}:${OS_RABBIT_PORT}"
+  echo "rabbit_hosts = ${OS_RABBIT_HOST}:${OS_RABBIT_PORT}"
   echo "rabbit_use_ssl = False"
-  echo "rabbit_userid = ${OS_RABBIT_USERID}"
+  echo "rabbit_userid = ${OS_RABBIT_USERNAME}"
   echo "rabbit_password = ${OS_RABBIT_PASSWORD}"
   echo "rabbit_virtual_host = /"
   echo "rabbit_ha_queues = False"
@@ -63,9 +67,9 @@ export MURANO_API_URL=http://${MURANO_CONTAINER_IP}:${OS_MURANO_API_PORT}
   echo ""
   echo "[rabbitmq]"
   echo "host = ${MURANO_CONTAINER_IP}"
-  echo "port = ${OS_RABBIT_PORT}"
-  echo "login = guest"
-  echo "password = guest" 
+  echo "port = ${MURANO_RABBIT_PORT}"
+  echo "login = ${OS_RABBIT_USERNAME}"
+  echo "password = ${OS_RABBIT_PASSWORD}" 
   echo "virtual_host = /"
   echo ""
   echo "[ssl]"
