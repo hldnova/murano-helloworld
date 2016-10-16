@@ -20,9 +20,12 @@ OS_USERNAME=admin
 OS_PASSWORD=password
 OS_PROJECT_NAME=admin
 ```
-Optional, if you want Murano to use rabbitmq on your existing OpenStack and keep the one on the container for VMs, set the following parameters.
+Optionally, if you want Murano to use rabbitmq on your existing OpenStack and keep the one on the container for VMs, set the following parameters.
 ```
-
+OS_RABBIT_HOST=${MURANO_CONTAINER_IP}
+OS_RABBIT_PORT=5672
+OS_RABBIT_USERNAME=guest
+OS_RABBIT_PASSWORD=guest
 ```
 
 To start
@@ -30,7 +33,7 @@ To start
 # sudo ./start-murano.sh
 ```
 
-To access Murano dashboard, point your browser to http://192.168.100.70:8000
+To access Murano dashboard, point your browser to http://192.168.100.70:8000. Adjust the URL to your container host hostname/IP address.
 
 The following services are running inside the container:
 * Murano API service
