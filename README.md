@@ -22,6 +22,12 @@ OS_USERNAME=admin
 OS_PASSWORD=password
 OS_PROJECT_NAME=admin
 ```
+
+To start
+```
+# sudo ./start-murano.sh
+```
+
 To access Murano dashboard, point your browser to http://<container_host_ip>:8000
 
 The following services are running inside the container:
