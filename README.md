@@ -7,6 +7,7 @@ This was based on the steps from http://docs.openstack.org/developer/murano/inst
 ## Prerequisites
 1. Install docker (e.g., on Ubuntu: https://docs.docker.com/engine/installation/linux/ubuntulinux/)
 2. In existing OpenStack, create a network/subnet connected to external network and configure DNS servers by editing the subnet so that the VMs can pull packages from internet during Murano deployment.
+3. User must have heat_stack_owner role in order to deploy Murano catalogy.
 
 ## Start Murano Services
 ```
