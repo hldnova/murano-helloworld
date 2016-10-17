@@ -16,7 +16,7 @@ git clone https://github.com/hldnova/murano-helloworld
 Edit start-murano.sh to set parameters to your OpenStack deployments. At a minimum, you will need to adjust the following parameters.
 ```
 MURANO_CONTAINER_IP=192.168.100.70
-KEYSTONE_HOST=192.168.100.60
+OS_KEYSTONE_HOST=192.168.100.60
 OS_USERNAME=admin
 OS_PASSWORD=password
 OS_PROJECT_NAME=admin
@@ -77,6 +77,6 @@ Useful information on the VMs deployed by Murano.
 
 Common issues:
 * OpenStack username/password are wrong. Check murano-init.log.
-* OpenStack rabbitmq username/password are wrong. This will cause deployment to timeout eventually. Check murano-engine.log.
+* OpenStack rabbitmq username/password are wrong or firewall blocks rabbitmq port. Check murano-engine.log and murano-api.log
 * DNS servers not configured for the subnet. This will cause the VM not being able to pull packages from internet.
-* Time skew between your docker host and OpenStack. This may show up as SSL error or 403 Proxy unacknowledged in some log files.
+* Time skew between your docker host and OpenStack. This may show up as SSL error or 403 Proxy unacknowledged in /var/log/murano-agent.log on the VM.
