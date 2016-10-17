@@ -8,7 +8,7 @@ OS_USERNAME=admin
 OS_PASSWORD=password
 OS_PROJECT_NAME=admin 
 
-# IP address of the host on which murano container will run on
+# IP address of the host to run Murano container
 MURANO_CONTAINER_IP=192.168.100.70
 
 # --- In general you don't need to edit anything below ---
