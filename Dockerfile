@@ -73,6 +73,7 @@ ADD bootstrap/murano-init.sh /root/murano/
 ADD bootstrap/rabbitmq.config /etc/rabbitmq/
 
 ADD catalog/nginx /root/murano/catalog/nginx/
+ADD catalog/README.txt /root/murano/catalog/
 
 EXPOSE 8082 8000 5672 15672 55672
 
