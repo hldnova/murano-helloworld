@@ -72,6 +72,8 @@ ADD bootstrap/boot.sh /root/murano/
 ADD bootstrap/murano-init.sh /root/murano/
 ADD bootstrap/rabbitmq.config /etc/rabbitmq/
 
+ADD catalog/nginx /root/murano/catalog/nginx/
+
 EXPOSE 8082 8000 5672 15672 55672
 
 WORKDIR "/root/murano"

@@ -115,4 +115,13 @@ echo "[rabbitmq_management]." > /etc/rabbitmq/enabled_plugins
 
 bash /root/murano/murano-init.sh > /logs/murano-init.log 2>&1 &
 
+# generate openstack rc file
+{
+  echo "unset \${!OS_*}"
+  echo "export OS_USERNAME=${OS_USERNAME_TEMP}"
+  echo "export OS_PASSWORD=${OS_PASSWORD_TEMP}"
+  echo "export OS_AUTH_URL=${OS_AUTH_URL}"
+  echo "export OS_TENANT_NAME=${OS_PROJECT_NAME_TEMP}"
+} > /root/murano/keystonerc
+
 tail -f /dev/null
